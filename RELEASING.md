@@ -44,7 +44,7 @@ terraform {
 
 Provide repository access to automation through its GitHub identity, deploy key, or credential helper. Do not place a token in the source URL or Terraform configuration.
 
-Create another candidate tag when the candidate changes. If the final candidate needs no changes, the stable tag may point to the same commit.
+Create another candidate tag whenever code, module documentation, or release-relevant metadata changes. After the final candidate passes, prepare the stable release with the small changelog update described below. The stable tag therefore normally points to that documentation-only release commit rather than directly to the candidate commit.
 
 ## Stable release procedure
 
@@ -68,6 +68,7 @@ Create another candidate tag when the candidate changes. If the final candidate 
 10. Create a GitHub Release from the tag using the matching changelog section as its notes.
 11. Upgrade an internal consuming environment by changing only the pinned tag. Review the plan before applying it.
 12. Verify ECS service health, target health, identity login, peer connectivity, Relay fallback, and routed access as applicable.
+13. Keep the most recent successful release-candidate deployment available as the comparison point until stable verification is complete.
 
 The tag is the release artifact used by Terraform. A GitHub Release improves discoverability and provides human-readable notes, but it must reference the existing immutable tag.
 

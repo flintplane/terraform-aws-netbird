@@ -13,7 +13,7 @@ Suggested branch names:
 - `docs/<subject>` for documentation-only work; and
 - `release/<version>` only for preparing a specific release.
 
-Automation may use its required namespace, such as `codex/<subject>`. Do not create a permanent `develop` branch. A second long-lived branch adds merge and release coordination without providing useful isolation while only one release line is supported.
+Automation may use its required branch namespace. Do not create a permanent `develop` branch. A second long-lived branch adds merge and release coordination without providing useful isolation while only one release line is supported.
 
 Create a maintenance branch such as `support/1.x` only when the project explicitly promises fixes for an older major release alongside a newer one.
 
@@ -40,12 +40,14 @@ CI checks Terraform formatting and validates every module. Contributors should r
 terraform fmt -check -recursive
 
 for module in modules/control-plane modules/relay modules/routing-peer; do
-  terraform -chdir="$module" init -backend=false -lockfile=readonly
+  terraform -chdir="$module" init -backend=false -input=false
   terraform -chdir="$module" validate
 done
 ```
 
 Do not run `terraform apply` from this repository. Deployment testing belongs to a consuming environment.
+
+The repository does not commit dependency lock files for child modules. CI resolves versions within each module's declared constraints, while a consuming root module owns its dependency lock file and pins the exact provider selections used for deployment.
 
 ## Changelog
 

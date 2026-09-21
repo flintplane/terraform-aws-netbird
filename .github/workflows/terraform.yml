@@ -63,7 +63,7 @@ jobs:
           terraform_version: ${{ matrix.terraform }}
 
       - name: Initialize module
-        run: terraform init -backend=false -input=false -lockfile=readonly
+        run: terraform init -backend=false -input=false
 
       - name: Validate module
         run: terraform validate -no-color

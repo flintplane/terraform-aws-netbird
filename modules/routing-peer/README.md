@@ -41,7 +41,7 @@ The module intentionally leaves task egress unrestricted. NetBird Networks and r
 
 - Two or more existing subnets in the same VPC
 - Outbound access from the subnets through NAT or suitable VPC endpoints
-- A pinned NetBird client image, such as `netbirdio/netbird:0.78.2`
+- A pinned NetBird client image, such as `netbirdio/netbird:0.79.0`
 - A reusable NetBird setup key stored in Secrets Manager
 - The secret and module in the same AWS region
 - The secret encrypted with the default `aws/secretsmanager` KMS key
@@ -82,7 +82,7 @@ module "central_routing_peer" {
   ]
   enable_ipv6 = true
 
-  image                = "netbirdio/netbird:0.78.2"
+  image                = "netbirdio/netbird:0.79.0"
   management_url       = "https://management.netbird.example.com"
   setup_key_secret_arn = "arn:aws:secretsmanager:eu-central-1:123456789012:secret:netbird/routing-peer-AbCdEf"
 

@@ -117,8 +117,8 @@ module "netbird_control_plane" {
   certificate_arn = "arn:aws:acm:eu-central-1:123456789012:certificate/00000000-0000-0000-0000-000000000000"
 
   images = {
-    management = "netbirdio/management:0.78.2"
-    signal     = "netbirdio/signal:0.78.2"
+    management = "netbirdio/management:0.79.0"
+    signal     = "netbirdio/signal:0.79.0"
     dashboard  = "netbirdio/dashboard:v2.90.8"
   }
 

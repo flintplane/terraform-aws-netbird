@@ -76,7 +76,7 @@ module "netbird_relay" {
   route53_zone_id       = "Z0123456789ABCDEFGHIJ"
   certificate_arn       = "arn:aws:acm:eu-central-1:123456789012:certificate/00000000-0000-0000-0000-000000000000"
   relay_auth_secret_arn = "arn:aws:secretsmanager:eu-central-1:123456789012:secret:netbird-relay-AbCdEf"
-  image                 = "netbirdio/relay:0.78.2"
+  image                 = "netbirdio/relay:0.79.0"
 
   tags = {
     Environment = "production"
