@@ -2,7 +2,7 @@
 
 Deploys the standalone NetBird Management, Signal, and Dashboard images as separate ECS Fargate services. The services share a public Application Load Balancer and a dedicated ECS cluster, but each has its own task definition, ECS service, security group, IAM roles, target groups, and log group.
 
-The module also creates a private, provisioned PostgreSQL RDS instance for Management and enables NetBird's embedded identity provider inside the Management process. It does not create a VPC, subnets, Route53 zone, ACM certificate, Relay, or external identity-provider resources.
+The module also creates a private, provisioned PostgreSQL RDS instance for Management and enables NetBird's embedded identity provider inside the Management process. It does not create a VPC, subnets, Route 53 zone, ACM certificate, Relay, or external identity-provider resources.
 
 ## Owned resources
 
@@ -10,7 +10,7 @@ The module also creates a private, provisioned PostgreSQL RDS instance for Manag
 - Separate Management, Signal, and Dashboard Fargate services
 - Internet-facing Application Load Balancer and HTTPS listener
 - Separate HTTP/1.1 and gRPC target groups where required
-- Route53 `A` alias records for all three public endpoints and optional `AAAA` aliases
+- Route 53 `A` alias records for all three public endpoints and optional `AAAA` aliases
 - Security groups and per-service task-execution IAM roles
 - Separate CloudWatch log groups
 - Single-AZ PostgreSQL RDS instance by default
@@ -95,76 +95,9 @@ Group synchronization does not grant the NetBird Owner or Admin role; manage pri
 
 See [OKTA.md](./OKTA.md) for a provider-specific example covering current Okta and NetBird UI fields, exact callbacks, testing, group claims, ownership, local-auth cutover, and lifecycle guidance.
 
-## Usage
+## Example
 
-```hcl
-module "netbird_control_plane" {
-  source = "../../modules/control-plane"
-
-  name               = "netbird-control"
-  vpc_id             = "vpc-0123456789abcdef0"
-  public_subnet_ids  = ["subnet-0123456789abcdef0", "subnet-11111111111111111"]
-  private_subnet_ids = ["subnet-22222222222222222", "subnet-33333333333333333"]
-  enable_ipv6        = true
-
-  endpoints = {
-    management_fqdn = "management.netbird.example.com"
-    signal_fqdn     = "signal.netbird.example.com"
-    dashboard_fqdn  = "dashboard.netbird.example.com"
-  }
-
-  route53_zone_id = "Z0123456789ABCDEFGHIJ"
-  certificate_arn = "arn:aws:acm:eu-central-1:123456789012:certificate/00000000-0000-0000-0000-000000000000"
-
-  images = {
-    management = "netbirdio/management:0.79.0"
-    signal     = "netbirdio/signal:0.79.0"
-    dashboard  = "netbirdio/dashboard:v2.90.8"
-  }
-
-  relay = {
-    auth_secret_arn = "arn:aws:secretsmanager:eu-central-1:123456789012:secret:netbird-relay-AbCdEf"
-    addresses       = ["rels://relay1.netbird.example.com:443"]
-    stun_uris       = ["stun:relay1.netbird.example.com:3478"]
-  }
-
-  netbird_dns_domain          = "nb.internal.example.com"
-  single_account_mode_domain = "example.com"
-  local_auth_disabled         = false
-
-  database = {
-    engine_version        = "16"
-    instance_class        = "db.t4g.small"
-    allocated_storage_gib = 20
-    max_storage_gib       = 100
-    backup_retention_days = 14
-    multi_az              = true
-    deletion_protection   = true
-    password_version      = 1
-  }
-
-  service_resources = {
-    management = {
-      cpu    = 512
-      memory = 1024
-    }
-    signal = {
-      cpu    = 256
-      memory = 512
-    }
-    dashboard = {
-      cpu           = 256
-      memory        = 512
-      desired_count = 1
-    }
-  }
-
-  tags = {
-    Environment = "production"
-    Service     = "netbird"
-  }
-}
-```
+See the canonical [Control Plane example](../../examples/control-plane/main.tf). It uses consistent example endpoints and makes the production database choices explicit.
 
 Use immutable image digests for production deployments. Management and Signal should use images from the same NetBird release.
 
@@ -203,8 +136,8 @@ Both KMS keys have 30-day deletion windows. Keep the RDS storage key as long as 
 | `private_subnet_ids` | `set(string)` | yes | At least two subnets for tasks and RDS. |
 | `enable_ipv6` | `bool` | no, `false` | Publish the public ALB endpoints over both IPv4 and IPv6; backend targets remain IPv4. |
 | `endpoints` | `object` | yes | Distinct Management, Signal, and Dashboard FQDNs. |
-| `route53_zone_id` | `string` | yes | Existing hosted-zone ID. |
-| `certificate_arn` | `string` | yes | Existing ACM certificate covering all endpoints. |
+| `route53_zone_id` | `string` | yes | Existing public hosted-zone ID. |
+| `certificate_arn` | `string` | yes | Existing regional ACM certificate covering all endpoints. |
 | `images` | `object` | yes | Pinned Management, Signal, and Dashboard images. |
 | `relay` | `object` | yes | Relay secret ARN and advertised Relay/STUN URIs. |
 | `netbird_dns_domain` | `string` | yes | Private peer-name suffix, such as `nb.internal.example.com`. |

@@ -61,12 +61,12 @@ variable "fqdn" {
 }
 
 variable "route53_zone_id" {
-  description = "ID of the existing Route53 hosted zone in which to create the relay record."
+  description = "ID of the existing public Route 53 hosted zone in which to create the Relay record."
   type        = string
 
   validation {
     condition     = can(regex("^Z[A-Z0-9]+$", var.route53_zone_id))
-    error_message = "route53_zone_id must be a Route53 hosted zone ID."
+    error_message = "route53_zone_id must be a Route 53 hosted zone ID."
   }
 }
 

@@ -54,7 +54,7 @@ Management uses a module-owned PostgreSQL RDS instance. The Management store, ac
 
 ### Relay sites
 
-One Relay module instance represents one advertised Relay identity and failure domain. It creates a singleton Fargate service behind an internet-facing Network Load Balancer and exposes:
+One Relay module instance represents one advertised Relay identity and failure domain. Its Fargate task remains private, while an internet-facing Network Load Balancer and public DNS name expose:
 
 - Relay over TLS on TCP/443; and
 - embedded STUN on UDP/3478.

@@ -33,8 +33,8 @@ Before deploying, decide:
 - Terraform backend and provider configuration
 - Existing VPCs and subnets
 - Route tables, internet/NAT/egress-only gateways, VPC peering, transit routing, and network ACLs
-- Route 53 hosted zone
-- ACM certificate covering the public module endpoints
+- Public Route 53 hosted zone for client-resolvable module endpoints
+- ACM certificate covering each public endpoint, in the same AWS region as its ALB or NLB
 - Permissions for Terraform to manage the documented module resources
 
 Private task subnets need outbound access through NAT or suitable VPC endpoints for ECS, the image registry, CloudWatch Logs, Secrets Manager, KMS, and other runtime dependencies. Management also needs HTTPS access to the selected external identity provider.
@@ -47,14 +47,14 @@ The Relay README documents creation, regional replication, rotation constraints,
 
 ### Naming and certificates
 
-Choose distinct public names for:
+Choose distinct public DNS names for:
 
 - Management API and embedded identity-provider endpoints;
 - Signal;
 - Dashboard; and
-- every Relay site.
+- one Relay/STUN endpoint for every Relay module instance.
 
-The Dashboard name is an administrative interface, while Management is the API and authentication origin used by NetBird clients. Certificates and hosted zones remain caller-owned.
+The Dashboard name is an administrative interface, while Management is the API and authentication origin used by NetBird clients. A Relay task remains private, but each Relay module exposes a public Relay/STUN endpoint through its internet-facing NLB. Certificates and hosted zones remain caller-owned. ACM certificates are regional, so Relay sites in different regions need certificates in their respective regions.
 
 ## Recommended sequence
 

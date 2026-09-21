@@ -1,6 +1,6 @@
 # NetBird Relay module
 
-Deploys one independently addressable NetBird Relay and embedded STUN endpoint on ECS Fargate. Each module instance is a singleton relay site with its own public Network Load Balancer and DNS name.
+Deploys one independently addressable NetBird Relay and embedded STUN endpoint on ECS Fargate. Each module instance is a singleton Relay site with its own public Network Load Balancer and DNS name; the Fargate task itself remains private.
 
 ## Owned resources
 
@@ -9,12 +9,12 @@ Deploys one independently addressable NetBird Relay and embedded STUN endpoint o
 - Internet-facing Network Load Balancer
 - TLS listener on TCP/443 and STUN listener on UDP/3478
 - Relay and STUN target groups
-- Route53 alias record
+- Route 53 alias record
 - Security groups
 - ECS task execution role and secret-read policy
 - CloudWatch log group
 
-The module does not create a VPC, subnets, ACM certificate, Route53 zone, or Relay authentication secret.
+The module does not create a VPC, subnets, ACM certificate, Route 53 zone, or Relay authentication secret.
 
 ## Runtime contract
 
@@ -61,42 +61,21 @@ The secret is part of the NetBird protocol configuration:
 - Store the authentication secret as the complete `SecretString`, not as a JSON field.
 - The Terraform caller needs `secretsmanager:ListSecretVersionIds` for this secret. Terraform reads version metadata to detect `AWSCURRENT`; it does not read the secret value.
 
-## Usage
+## Example
+
+See the canonical [Relay example](../../examples/relay/main.tf). It uses `relay1.netbird.example.com` as the public Relay/STUN endpoint.
+
+When Relay and Control Plane modules are composed in the same root configuration, pass the Relay outputs directly to the Control Plane:
 
 ```hcl
-module "netbird_relay" {
-  source = "../../modules/relay"
-
-  name               = "netbird-relay-ee"
-  vpc_id             = "vpc-0123456789abcdef0"
-  public_subnet_ids  = ["subnet-0123456789abcdef0", "subnet-11111111111111111"]
-  private_subnet_ids = ["subnet-22222222222222222", "subnet-33333333333333333"]
-
-  fqdn                 = "relay-ee.example.com"
-  route53_zone_id       = "Z0123456789ABCDEFGHIJ"
-  certificate_arn       = "arn:aws:acm:eu-central-1:123456789012:certificate/00000000-0000-0000-0000-000000000000"
-  relay_auth_secret_arn = "arn:aws:secretsmanager:eu-central-1:123456789012:secret:netbird-relay-AbCdEf"
-  image                 = "netbirdio/relay:0.79.0"
-
-  tags = {
-    Environment = "production"
-    Service     = "netbird"
-  }
+relay = {
+  auth_secret_arn = var.relay_auth_secret_arn
+  addresses       = [module.netbird_relay.relay_uri]
+  stun_uris       = [module.netbird_relay.stun_uri]
 }
 ```
 
-Configure Management with the module outputs:
-
-```yaml
-server:
-  stuns:
-    - uri: "stun:relay-ee.example.com:3478"
-      proto: "udp"
-  relays:
-    addresses:
-      - "rels://relay-ee.example.com:443"
-    secret: "the-same-secret-value"
-```
+Use the same caller-owned secret ARN for `var.relay_auth_secret_arn` and the Relay module's `relay_auth_secret_arn` input.
 
 ## Recovery and scaling
 
@@ -111,8 +90,8 @@ The ECS service uses stop-then-start deployments so two instances of the same Re
 | `public_subnet_ids` | `set(string)` | yes | Subnets for the internet-facing NLB. |
 | `private_subnet_ids` | `set(string)` | yes | Subnets for the private Fargate task. |
 | `fqdn` | `string` | yes | Public Relay/STUN DNS name. |
-| `route53_zone_id` | `string` | yes | Existing hosted-zone ID. |
-| `certificate_arn` | `string` | yes | Existing ACM certificate covering `fqdn`. |
+| `route53_zone_id` | `string` | yes | Existing public hosted-zone ID. |
+| `certificate_arn` | `string` | yes | Existing ACM certificate covering `fqdn` in the Relay site's AWS region. |
 | `relay_auth_secret_arn` | `string` | yes | ARN of the regional plaintext Relay-auth secret. |
 | `image` | `string` | yes | Pinned Relay image reference. |
 | `cpu` | `number` | no, `256` | Fargate CPU units. |
