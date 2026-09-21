@@ -6,6 +6,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## Unreleased
 
+## [0.1.0] - 2026-09-21
+
 ### Added
 
 - Control Plane module with separate Management, Signal, and Dashboard ECS services, PostgreSQL RDS, embedded identity-provider support, and optional dual-stack public endpoints.
