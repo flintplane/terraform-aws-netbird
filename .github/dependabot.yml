@@ -1,0 +1,34 @@
+version: 2
+
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+
+  - package-ecosystem: terraform
+    directory: /modules/control-plane
+    schedule:
+      interval: monthly
+    groups:
+      terraform-providers:
+        patterns:
+          - "*"
+
+  - package-ecosystem: terraform
+    directory: /modules/relay
+    schedule:
+      interval: monthly
+    groups:
+      terraform-providers:
+        patterns:
+          - "*"
+
+  - package-ecosystem: terraform
+    directory: /modules/routing-peer
+    schedule:
+      interval: monthly
+    groups:
+      terraform-providers:
+        patterns:
+          - "*"
