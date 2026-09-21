@@ -114,10 +114,10 @@ This procedure was verified with a macOS client and ECS Managed Instances routin
 Verify both DNS families and HTTPS:
 
 ```bash
-dig +short A management.example.com
-dig +short AAAA management.example.com
-curl -4 --fail https://management.example.com/api/instance
-curl -6 --fail https://management.example.com/api/instance
+dig +short A management.netbird.example.com
+dig +short AAAA management.netbird.example.com
+curl -4 --fail https://management.netbird.example.com/api/instance
+curl -6 --fail https://management.netbird.example.com/api/instance
 ```
 
 Repeat the DNS checks for Signal and Dashboard. Application-level client and login tests remain necessary because DNS and HTTPS reachability alone do not validate gRPC, WebSocket, or authentication behavior.

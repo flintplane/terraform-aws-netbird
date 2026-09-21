@@ -13,7 +13,7 @@ The repository is a cohesive reference architecture composed of independently de
 - Expects existing VPCs, subnets, DNS, certificates, and a Terraform backend.
 - Favors managed AWS services, pinned images, explicit trust boundaries, and independent replacement over the smallest possible topology.
 
-Start with the [module overview](#modules) and [deployment order](#deployment-order). Read [Architecture](./docs/ARCHITECTURE.md) for the rationale and trade-offs.
+Start with the [module overview](#modules), [deployment order](#deployment-order), and [examples](./examples). Read [Architecture](./docs/ARCHITECTURE.md) for the rationale and trade-offs.
 
 ## Why this architecture
 
@@ -98,7 +98,7 @@ Depending on the selected modules, the calling environment provides:
 
 - an AWS provider configuration and Terraform backend;
 - existing VPC and subnet IDs;
-- an existing Route 53 hosted zone and ACM certificate;
+- an existing public Route 53 hosted zone and regional ACM certificate or certificates;
 - network egress or the VPC endpoints needed by private tasks;
 - a Relay authentication secret in Secrets Manager;
 - a routing-peer setup key in Secrets Manager when routing sites are used; and
@@ -145,6 +145,7 @@ See [IPv6 support](./IPV6.md) for infrastructure requirements, behavior, limitat
 
 - [Architecture](./docs/ARCHITECTURE.md): motivation, component boundaries, traffic flows, trust model, availability, and trade-offs.
 - [Deployment](./docs/DEPLOYMENT.md): prerequisites, deployment sequence, decisions, verification, and lifecycle guidance.
+- [Examples](./examples): canonical module configurations and composition guidance.
 - [IPv6 support](./IPV6.md): optional dual-stack scope and AWS requirements.
 - [Traffic-event auditability](./TRAFFIC-EVENTS.md): deferred investigation and possible future approaches.
 - [Control Plane module](./modules/control-plane): module contract and operations.

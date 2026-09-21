@@ -6,6 +6,15 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## Unreleased
 
+### Changed
+
+- Moved canonical module configurations into a top-level `examples` directory and clarified how Relay outputs compose with the Control Plane.
+- Clarified the public Relay/NLB boundary, public DNS-zone requirement, and regional ACM certificate requirement.
+
+### Fixed
+
+- Standardized example endpoint names and excluded child-module provider lock files from the published repository.
+
 ## [0.1.0] - 2026-09-21
 
 ### Added
