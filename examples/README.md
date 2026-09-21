@@ -9,7 +9,7 @@ These examples are canonical consumer configurations for the repository's three 
 They use repository-relative module sources so they can be formatted and validated from a checkout. A real consumer should replace the relative source with an immutable Git tag, for example:
 
 ```hcl
-source = "git::https://github.com/flintplane/terraform-aws-netbird.git//modules/control-plane?ref=v0.1.0"
+source = "git::https://github.com/flintplane/terraform-aws-netbird.git//modules/control-plane?ref=v0.1.1"
 ```
 
 Private consumers can use an SSH Git URL with the same `//modules/<name>?ref=<tag>` syntax. Do not point production environments at a branch.

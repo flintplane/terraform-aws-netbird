@@ -6,6 +6,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## Unreleased
 
+## [0.1.1] - 2026-09-21
+
 ### Changed
 
 - Moved canonical module configurations into a top-level `examples` directory and clarified how Relay outputs compose with the Control Plane.
